@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конструктор заказа озвучки</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #a6d2ef 0%, #fff8e1 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 4px;
+            -webkit-box-shadow: 0px 0px 6px 1px rgba(34, 60, 80, 1);
+            -moz-box-shadow: 0px 0px 6px 1px rgba(34, 60, 80, 1);
+            box-shadow: 0px 0px 6px 1px rgba(34, 60, 80, 1);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #111111;
+            font-size: 18px;
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .form-section h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-section h3 span {
+            background: #3498db;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            background-color: white;
+            transition: all 0.3s;
+        }
+        
+        select:focus, textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 5px rgba(52, 152, 219, 0.5);
+        }
+        
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            font-weight: bold;
+            margin: 30px 0;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .result {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #2ecc71;
+            display: none;
+        }
+        
+        .result h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+            text-align: center;
+        }
+        
+        .order-text {
+            white-space: pre-wrap;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            max-height: 400px;
+            overflow-y: auto;
+            line-height: 1.8;
+        }
+        
+        .copy-btn {
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 15px;
+            font-weight: bold;
+            transition: transform 0.3s;
+            display: block;
+            width: 100%;
+            font-size: 16px;
+        }
+        
+        .copy-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .voice-info {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #7f8c8d;
+            font-style: italic;
+            display: none; /* Скрыто по умолчанию */
+        }
+        
+        .required {
+            color: #e74c3c;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+        }
+        
+        .instructions {
+            background: #fff8e1;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #ffc107;
+            margin-bottom: 20px;
+        }
+        
+        .instructions h3 {
+            color: #d35400;
+            margin-bottom: 10px;
+        }
+        
+        .audio-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+            display: none; /* Скрыто по умолчанию */
+        }
+        
+        .play-btn {
+            padding: 8px 15px;
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .play-btn:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #2573a7 100%);
+        }
+        
+        .audio-status {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        
+        .audio-player {
+            display: none;
+        }
+        
+        .char-counter {
+            text-align: right;
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .char-counter.limit {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        
+        .text-limit-info {
+            background: #fff8e1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            font-size: 14px;
+            border-left: 3px solid #ffc107;
+        }
+        
+        /* Новый стиль для описания стиля подачи */
+        .style-info {
+            margin-top: 5px;
+            font-size: 13px;
+            color: #7f8c8d;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            border-left: 3px solid #3498db;
+            display: none; /* Скрыто по умолчанию */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>@echoscript | kwork.ru</h1>
+            <p class="subtitle">Выберите параметры голоса и вставьте текст для озвучки!</p>
+        </header>
+        
+        <div class="instructions">
+            <h3>📋 Как это работает:</h3>
+            <p>1. Выберите параметры голоса<br>
+               2. Вставьте текст для озвучки (до 600 символов)<br>
+               3. Нажмите "Сгенерировать заявку"<br>
+               4. Скопируйте готовый текст заявки и вернитесь на сайт kwork.ru</p>
+        </div>
+        
+        <div class="form-section">
+            <h3><span>1</span> Характеристики голоса</h3>
+            
+            <div class="form-group">
+                <label for="gender">Пол рассказчика <span class="required">*</span></label>
+                <select id="gender">
+                    <option value="">-- Выберите пол --</option>
+                    <option value="мужской">Мужской</option>
+                    <option value="женский">Женский</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="age">Возрастная группа <span class="required">*</span></label>
+                <select id="age">
+                    <option value="">-- Выберите возраст --</option>
+                    <option value="18–25 лет">Молодой (18–25 лет)</option>
+                    <option value="30–45 лет">Зрелый (30–45 лет)</option>
+                    <option value="50–65 лет">Опытный (50–65 лет)</option>
+                    <option value="65+ лет">Старший, мудрый (65+ лет)</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="voiceType">Тип голоса <span class="required">*</span></label>
+                <select id="voiceType">
+                    <option value="">-- Выберите тип голоса --</option>
+                    <option value="Бархатный">Бархатный - мягкий, обволакивающий</option>
+                    <option value="Грубый">Грубый - с хрипотцой, брутальный</option>
+                    <option value="Мягкий">Мягкий - спокойный, уютный</option>
+                    <option value="Тёплый">Тёплый - дружелюбный, заботливый</option>
+                    <option value="Холодный">Холодный - строгий, официальный</option>
+                    <option value="Высокий">Высокий - энергичный, эмоциональный</option>
+                    <option value="Низкий">Низкий - глубокий, авторитетный</option>
+                    <option value="Драматичный">Драматичный - эмоциональный, с паузами</option>
+                    <option value="Уверенный">Уверенный - чёткий, авторитетный</option>
+                    <option value="Спокойный">Спокойный - ровный, размеренный</option>
+                    <option value="Харизматичный">Харизматичный - живой, с «искрой»</option>
+                    <option value="Таинственный">Таинственный - загадочный, с недосказанностью</option>
+                    <option value="Дружелюбный">Дружелюбный - открытый, добрый</option>
+                    <option value="Суровый">Суровый - строгий, жёсткий</option>
+                </select>
+                <div class="voice-info" id="voiceTypeInfo"></div>
+            </div>
+            
+            <div class="form-group">
+                <label for="specificVoice">Конкретный голос <span class="required">*</span></label>
+                <select id="specificVoice">
+                    <option value="">-- Сначала выберите пол --</option>
+                </select>
+                <div class="voice-info" id="specificVoiceInfo"></div>
+                <div class="audio-controls" id="audioControls">
+                    <button class="play-btn" id="playBtn">
+                        <span>▶</span> Прослушать голос
+                    </button>
+                    <span class="audio-status" id="audioStatus"></span>
+                </div>
+                <audio id="audioPlayer" class="audio-player"></audio>
+            </div>
+            
+            <div class="form-group">
+                <label for="style">Стиль подачи <span class="required">*</span></label>
+                <select id="style">
+                    <option value="">-- Выберите стиль --</option>
+                    <option value="Мориарти (загадочный, манипулятивный)">Мориарти (загадочный, манипулятивный)</option>
+                    <option value="Диктор новостей (чётко, официально)">Диктор новостей (чётко, официально)</option>
+                    <option value="Радиоведущий (живой, энергичный)">Радиоведущий (живой, энергичный)</option>
+                    <option value="Актёр театра (драматично, с паузами)">Актёр театра (драматично, с паузами)</option>
+                    <option value="Харизматичный ведущий (эмоционально, ярко)">Харизматичный ведущий (эмоционально, ярко)</option>
+                    <option value="Блогер (свободно, дружелюбно)">Блогер (свободно, дружелюбно)</option>
+                    <option value="Рассказчик сказок (с теплом, образно)">Рассказчик сказок (с теплом, образно)</option>
+                    <option value="Лектор (умный, объясняющий)">Лектор (умный, объясняющий)</option>
+                    <option value="Мотиватор (вдохновляюще, мощно)">Мотиватор (вдохновляюще, мощно)</option>
+                    <option value="Триллер (напряжённо, таинственно)">Триллер (напряжённо, таинственно)</option>
+                    <option value="Рекламный (убедительно, продающе)">Рекламный (убедительно, продающе)</option>
+                </select>
+                <div class="style-info" id="styleInfo"></div>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3><span>2</span> Текст для озвучки</h3>
+            
+            <div class="form-group">
+                <label for="textToVoice">Текст для озвучки <span class="required">*</span></label>
+                <textarea id="textToVoice" placeholder="Вставьте текст, который нужно озвучить (максимум 600 символов)..." maxlength="600"></textarea>
+                <div class="char-counter" id="charCounter">0/600 символов</div>
+                <div class="text-limit-info">
+                    ⏱️ <strong>Ограничение:</strong> до 600 символов (примерно 40 секунд озвучки)
+                </div>
+            </div>
+        </div>
+        
+        <button id="generateBtn" class="btn">Сгенерировать заявку</button>
+        
+        <div class="result" id="resultSection">
+            <h2>✅ Ваша заявка готова!</h2>
+            <div class="order-text" id="orderOutput"></div>
+            <button id="copyBtn" class="copy-btn">Скопировать заявку</button>
+        </div>
+    </div>
+
+    <script>
+        // Константы
+        const MAX_CHARS = 600;
+        
+        // Данные о голосах с ссылками на аудиофайлы
+        const voiceData = {
+            мужской: [
+                {name: "Геннадий Басович", desc: "Классический глубокий и плавный", audio: "audio/male/геннадий_басович.mp3"},
+                {name: "Влад Дикторов", desc: "Уверенный, дикторский, солидный", audio: "audio/male/влад_дикторов.mp3"},
+                {name: "Матвей 'Молот'", desc: "Уверенный, авторитетный, с характером", audio: "audio/male/матвей_молот.mp3"},
+                {name: "Евгений Хриплый", desc: "Дыхательный, с хрипотцой, низкий тембр", audio: "audio/male/евгений_хриплый.mp3"},
+                {name: "Геннадий Сиплый", desc: "Хриплый, низкий тембр", audio: "audio/male/геннадий_сиплый.mp3"},
+                {name: "Виктор 'На низких'", desc: "Восторженный, низкий тембр", audio: "audio/male/виктор_на_низких.mp3"},
+                {name: "Сергей Умиротворённый", desc: "Расслабленный, низкий тембр", audio: "audio/male/сергей_умиротворенный.mp3"},
+                {name: "Анатолий Размеренный", desc: "Расслабленный, низкий тембр", audio: "audio/male/анатолий_размеренный.mp3"},
+                {name: "Павел Чёткий", desc: "Чёткий, средне-низкий тембр", audio: "audio/male/павел_четкий.mp3"},
+                {name: "Дмитрий Дружелюбный", desc: "Дружелюбный, средне-низкий тембр", audio: "audio/male/дмитрий_дружелюбный.mp3"},
+                {name: "Артём Неформалов", desc: "Неформальный, средне-низкий тембр", audio: "audio/male/артем_неформалов.mp3"},
+                {name: "Аркадий Бескомпромиссный", desc: "Твёрдый, средне-низкий тембр", audio: "audio/male/аркадий_бескомпромиссный.mp3"},
+                {name: "Константин Драматичный", desc: "Информативный, средний тембр", audio: "audio/male/константин_драматичный.mp3"},
+                {name: "Кирилл Знающий", desc: "Осведомлённый, компетентный", audio: "audio/male/кирилл_знающий.mp3"},
+                {name: "Станислав Энергичный", desc: "Энергичный, средний тембр", audio: "audio/male/станислав_энергичный.mp3"},
+                {name: "Вадим Огненный", desc: "Живой, оживлённый, низкий тембр", audio: "audio/male/вадим_огненный.mp3"}
+            ],
+            женский: [
+                {name: "Марина Бархатная", desc: "Грубый голос - Плавный, средний тембр", audio: "audio/female/марина_бархатная.mp3"},
+                {name: "Алина Воздушная", desc: "Мягкий, высокий тембр", audio: "audio/female/алина_воздушная.mp3"},
+                {name: "Светлана Обволакивающая", desc: "Мягкий голос - Тёплый, средний тембр", audio: "audio/female/светлана_обволакивающая.mp3"},
+                {name: "Кира Твёрдая", desc: "Твёрдый, уверенный, средний тембр", audio: "audio/female/кира_твердая.mp3"},
+                {name: "Анna Прямая", desc: "Прямой, открытый, средний тембр", audio: "audio/female/анна_прямая.mp3"},
+                {name: "Яся Звонкая", desc: "Яркий, высокий тембр", audio: "audio/female/яся_звонкая.mp3"},
+                {name: "Лера Нежная", desc: "Нежный, средний тембр", audio: "audio/female/лера_нежная.mp3"},
+                {name: "Ольга Расслабляющая", desc: "Расслабленный, средний тембр", audio: "audio/female/ольга_расслабляющая.mp3"},
+                {name: "Галина Роковая", desc: "Зрелый, средний тембр", audio: "audio/female/галина_роковая.mp3"},
+                {name: "Виктория Победная", desc: "Энергичный, высокий тембр", audio: "audio/female/виктория_победная.mp3"},
+                {name: "Ульяна Юная", desc: "Юный, высокий тембр", audio: "audio/female/ульяна_юная.mp3"},
+                {name: "Екатерина Чёткая (Катя-Командир)", desc: "Чёткий, средний тембр", audio: "audio/female/екатерина_четкая.mp3"},
+                {name: "Василиса Загадочная", desc: "Яркий, средний тембр", audio: "audio/female/василиса_загадочная.mp3"},
+                {name: "Наталья Дружеская", desc: "Непринуждённый, средний тембр", audio: "audio/female/наталья_дружеская.mp3"}
+            ]
+        };
+
+        // Описания типов голосов
+        const voiceTypeDescriptions = {
+            "Бархатный": "Мягкий, густой, «обволакивающий» голос, звучит приятно и богато, с глубиной и теплом.",
+            "Грубый": "Резкий, слегка «шершавый» голос с оттенком силы и твёрдости.",
+            "Мягкий": "Спокойный и плавный голос, легко слушается, создаёт ощущение комфорта.",
+            "Тёплый": "Дружелюбный и располагающий, будто говорящий заботится о слушателе.",
+            "Холодный": "Отстранённый, строгий и официальный, создаёт ощущение напряжения или серьёзности.",
+            "Высокий": "Звонкий и лёгкий, звучит энергично и эмоционально, ближе к верхним тонам.",
+            "Низкий": "Глубокий и насыщенный, создаёт ощущение уверенности, силы и авторитета.",
+            "Драматичный": "Насыщенный эмоциями, с паузами и напряжением, будто речь о судьбоносных событиях.",
+            "Уверенный": "Чёткий и твёрдый голос, звучит как авторитетный и надёжный источник.",
+            "Спокойный": "Ровный и размеренный, без резных перепадов, передаёт уравновешенность.",
+            "Харизматичный": "Живой и энергичный, с особой «искрой», легко удерживает внимание.",
+            "Таинственный": "Загадочный и недосказанный, создаёт ощущение, что скрывается секрет.",
+            "Дружелюбный": "Открытый и лёгкий голос, вызывает симпатию, звучит по-доброму.",
+            "Суровый": "Строгий и жёсткий голос, внушает уважение и серьёзность."
+        };
+
+        // Описания стилей подачи
+        const styleDescriptions = {
+            "Мориарти (загадочный, манипулятивный)": "Голос с тайной, который будто ведёт интеллектуальную игру. Звучит умно, сдержанно и интригующе.\nПрименение: детективы, триллеры, интригующие анонсы.",
+            "Диктор новостей (чётко, официально)": "Абсолютная ясность и строгость. Каждое слово звучит безэмоционально, но весомо.\nПрименение: новостные сводки, официальные объявления, документалистика.",
+            "Радиоведущий (живой, энергичный)": "Разговорный, яркий, эмоциональный тон. Создаёт ощущение лёгкости и вовлечённости.\nПрименение: подкасты, музыкальные передачи, развлекательный контент.",
+            "Актёр театра (драматично, с паузами)": "Сильные эмоции, глубокие паузы, игра голосом. Каждая фраза звучит как часть спектакля.\nПрименение: аудиокниги, постановки, трейлеры, художественные чтения.",
+            "Харизматичный ведущий (эмоционально, ярко)": "Звучит как душа компании: ярко, заразительно, уверенно. Голос притягивает внимание.\nПрименение: YouTube-ролики, выступления, презентации, реклама.",
+            "Блогер (свободно, дружелюбно)": "Естественный, непринуждённый стиль. Голос звучит так, будто говорит друг или знакомый.\nПрименение: влоги, сторис, личные обзоры, дружеские форматы.",
+            "Рассказчик сказок (с теплом, образно)": "Мягкий, уютный голос, создающий образы и эмоции. В его речи есть магия и забота.\nПрименение: сказки, детские истории, семейные подкасты.",
+            "Лектор (умный, объясняющий)": "Спокойный, рассудительный, уверенный тон. Голос доносит мысль логично и понятно.\nПрименение: образовательные видео, курсы, документальные фильмы.",
+            "Мотиватор (вдохновляюще, мощно)": "Сильный, энергичный голос, который «поднимает на ноги». Вдохновляет действовать.\nПрименение: спорт, бизнес-ролики, мотивационные речи, промо-кампании.",
+            "Триллер (напряжённо, таинственно)": "Динамичный, напряжённый голос с интригой. Интонации создают эффект ожидания и опасности.\nПрименение: детективы, хорроры, трейлеры, криминальные истории.",
+            "Рекламный (убедительно, продающе)": "Чёткий, яркий голос, который выделяет выгоду и вызывает желание действовать.\nПрименение: рекламные ролики, презентации товаров и услуг."
+        };
+
+        // Элементы DOM
+        const genderSelect = document.getElementById('gender');
+        const voiceTypeSelect = document.getElementById('voiceType');
+        const specificVoiceSelect = document.getElementById('specificVoice');
+        const voiceTypeInfo = document.getElementById('voiceTypeInfo');
+        const specificVoiceInfo = document.getElementById('specificVoiceInfo');
+        const audioControls = document.getElementById('audioControls');
+        const playBtn = document.getElementById('playBtn');
+        const audioStatus = document.getElementById('audioStatus');
+        const audioPlayer = document.getElementById('audioPlayer');
+        const textToVoice = document.getElementById('textToVoice');
+        const charCounter = document.getElementById('charCounter');
+        const generateBtn = document.getElementById('generateBtn');
+        const resultSection = document.getElementById('resultSection');
+        const orderOutput = document.getElementById('orderOutput');
+        const copyBtn = document.getElementById('copyBtn');
+        const styleSelect = document.getElementById('style');
+        const styleInfo = document.getElementById('styleInfo');
+
+        // Текущий выбранный голос
+        let currentVoice = null;
+
+        // Обновление счетчика символов
+        function updateCharCounter() {
+            const text = textToVoice.value;
+            const count = text.length;
+            charCounter.textContent = `${count}/${MAX_CHARS} символов`;
+            
+            if (count > MAX_CHARS * 0.9) {
+                charCounter.classList.add('limit');
+            } else {
+                charCounter.classList.remove('limit');
+            }
+        }
+
+        // Обновление описания типа голоса
+        function updateVoiceTypeInfo() {
+            const voiceType = voiceTypeSelect.value;
+            if (voiceType) {
+                voiceTypeInfo.textContent = voiceTypeDescriptions[voiceType] || '';
+                voiceTypeInfo.style.display = 'block';
+            } else {
+                voiceTypeInfo.style.display = 'none';
+            }
+        }
+
+        // Обновление описания стиля подачи
+        function updateStyleInfo() {
+            const style = styleSelect.value;
+            if (style) {
+                styleInfo.textContent = styleDescriptions[style] || '';
+                styleInfo.style.display = 'block';
+            } else {
+                styleInfo.style.display = 'none';
+            }
+        }
+
+        // Обновление списка конкретных голосов
+        function updateSpecificVoices() {
+            const gender = genderSelect.value;
+            
+            specificVoiceSelect.innerHTML = '';
+            audioControls.style.display = 'none';
+            specificVoiceInfo.style.display = 'none';
+            currentVoice = null;
+            
+            if (voiceData[gender]) {
+                // Добавляем опцию по умолчанию
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '-- Выберите голос --';
+                specificVoiceSelect.appendChild(defaultOption);
+                
+                // Добавляем голоса
+                voiceData[gender].forEach(voice => {
+                    const option = document.createElement('option');
+                    option.value = voice.name;
+                    option.textContent = `${voice.name} (${voice.desc})`;
+                    option.dataset.audio = voice.audio;
+                    specificVoiceSelect.appendChild(option);
+                });
+                
+                // Сбрасываем описание
+                specificVoiceInfo.textContent = '';
+            } else {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = '-- Сначала выберите пол --';
+                specificVoiceSelect.appendChild(option);
+            }
+        }
+
+        // Обновление описания конкретного голоса
+        function updateSpecificVoiceInfo() {
+            const gender = genderSelect.value;
+            const voiceName = specificVoiceSelect.value;
+            const audioFile = specificVoiceSelect.options[specificVoiceSelect.selectedIndex]?.dataset.audio;
+            
+            if (voiceData[gender] && voiceName && audioFile) {
+                const voice = voiceData[gender].find(v => v.name === voiceName);
+                specificVoiceInfo.textContent = voice ? voice.desc : '';
+                specificVoiceInfo.style.display = 'block';
+                
+                // Показываем кнопку прослушивания
+                audioControls.style.display = 'flex';
+                currentVoice = voice;
+                audioStatus.textContent = 'Нажмите для прослушивания';
+            } else {
+                audioControls.style.display = 'none';
+                specificVoiceInfo.style.display = 'none';
+                currentVoice = null;
+            }
+        }
+
+        // Воспроизведение аудио
+        function playAudio() {
+            if (!currentVoice) return;
+            
+            try {
+                audioPlayer.src = currentVoice.audio;
+                audioPlayer.play();
+                
+                playBtn.innerHTML = '<span>⏸</span> Пауза';
+                audioStatus.textContent = 'Воспроизведение...';
+                
+                audioPlayer.onended = function() {
+                    playBtn.innerHTML = '<span>▶</span> Прослушать голос';
+                    audioStatus.textContent = 'Завершено';
+                };
+                
+                audioPlayer.onpause = function() {
+                    playBtn.innerHTML = '<span>▶</span> Продолжить';
+                    audioStatus.textContent = 'На паузе';
+                };
+                
+            } catch (error) {
+                audioStatus.textContent = 'Ошибка загрузки аудио';
+                console.error('Ошибка воспроизведения:', error);
+            }
+        }
+
+        // Обработчик клика по кнопке воспроизведения
+        function toggleAudio() {
+            if (audioPlayer.paused) {
+                playAudio();
+            } else {
+                audioPlayer.pause();
+            }
+        }
+
+        // Генерация заявки
+        function generateOrder() {
+            const gender = document.getElementById('gender').value;
+            const age = document.getElementById('age').value;
+            const voiceType = document.getElementById('voiceType').value;
+            const specificVoice = document.getElementById('specificVoice').value;
+            const style = document.getElementById('style').value;
+            const text = textToVoice.value;
+            
+            // Проверка обязательных полей
+            if (!gender || !age || !voiceType || !specificVoice || !style || !text) {
+                alert('Пожалуйста, заполните все обязательные поля (отмечены звёздочкой *)');
+                return;
+            }
+            
+            // Проверка длины текста
+            if (text.length > MAX_CHARS) {
+                alert(`Текст слишком длинный! Максимум ${MAX_CHARS} символов. Сейчас: ${text.length} символов.`);
+                return;
+            }
+            
+            const order = `ЗАЯВКА НА ОЗВУЧКУ
+
+🎧 ПАРАМЕТРЫ ОЗвучки:
+Пол: ${gender}
+Возраст: ${age}
+Тип голоса: ${voiceType}
+Конкретный голос: ${specificVoice}
+Стиль подачи: ${style}
+
+📝 ТЕКСТ ДЛЯ ОЗВУЧКИ (${text.length} символов):
+${text}
+
+---
+Сгенерировано через конструктор заказов`;
+
+            orderOutput.textContent = order;
+            resultSection.style.display = 'block';
+            
+            // Прокрутка к результату
+            resultSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Копирование заявки в буфер обмена
+        function copyToClipboard() {
+            const textarea = document.createElement('textarea');
+            textarea.value = orderOutput.textContent;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            
+            alert('Заявка скопирована в буфер обмена! Теперь вы можете отправить её нам.');
+        }
+
+        // Инициализация
+        updateCharCounter();
+        
+        // Обработчики событий
+        voiceTypeSelect.addEventListener('change', updateVoiceTypeInfo);
+        styleSelect.addEventListener('change', updateStyleInfo);
+        genderSelect.addEventListener('change', updateSpecificVoices);
+        specificVoiceSelect.addEventListener('change', updateSpecificVoiceInfo);
+        textToVoice.addEventListener('input', updateCharCounter);
+        playBtn.addEventListener('click', toggleAudio);
+        generateBtn.addEventListener('click', generateOrder);
+        copyBtn.addEventListener('click', copyToClipboard);
+    </script>
+</body>
+</html>
